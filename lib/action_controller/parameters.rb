@@ -29,7 +29,7 @@ module ActionController
     def require(key)
       self[key].presence || raise(ActionController::ParameterMissing.new(key))
     end
-    
+
     alias :required :require
 
     def permit(*filters)
@@ -39,6 +39,10 @@ module ActionController
         case filter
         when Symbol then
           params[filter] = self[filter] if has_key?(filter)
+
+          multi_param_keys_for(filter).each do |multi_filter|
+            params[multi_filter] = self[multi_filter]
+          end
         when Hash then
           self.slice(*filter.keys).each do |key, value|
             return unless value
@@ -96,6 +100,12 @@ module ActionController
         else
           yield object
         end
+      end
+
+      def multi_param_keys_for(filter)
+        keys.select { |key|
+          key.index("#{filter}(") == 0 && key.index(")") == key.length - 1
+        }
       end
   end
 
