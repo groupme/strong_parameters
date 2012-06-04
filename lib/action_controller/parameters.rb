@@ -104,7 +104,7 @@ module ActionController
 
       def multi_param_keys_for(filter)
         keys.select do |key|
-          key.match /#{filter}\(\d+i\)/
+          key.start_with? "#{filter}(" and key.end_with? ')'
         end
       end
   end
