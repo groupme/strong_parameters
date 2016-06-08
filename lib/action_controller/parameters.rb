@@ -103,9 +103,9 @@ module ActionController
       end
 
       def multi_param_keys_for(filter)
-        keys.select { |key|
-          key.index("#{filter}(") == 0 && key.index(")") == key.length - 1
-        }
+        keys.select do |key|
+          key.start_with? "#{filter}(" and key.end_with? ')'
+        end
       end
   end
 
